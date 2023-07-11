@@ -1,0 +1,33 @@
+{% extends 'adminBase.html' %}
+
+{% block title %}
+Update Account
+{% endblock %}
+
+{% block content %}
+
+    {% include 'navbar.html' %}
+
+    <h3 class="alert alert-primary text-center">Update Customer Particulars</h3>
+
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="container mt-3">
+                {% for message in messages %}
+                    <p class="alert alert-success mt-3">{{message}}</p>
+                {% endfor %}
+
+                {% load crispy_forms_tags %}
+
+                <form method="post" class="form-group">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <a href="{% url 'view' %}" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-success">Update Particulars</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

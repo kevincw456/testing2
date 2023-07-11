@@ -1,0 +1,40 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+{% include 'navbar.html' %}
+ <br><br><br>
+
+<div class="card bg-light mb-3" style="max-width: 30rem; margin:0 auto;">
+  <div class="card-header"><b>Customer Profile   ID: #{{ cust_record.id }}</b></div>
+  <div class="card-body">
+    <h5 class="card-title">{{ cust_record.first_name }} {{ cust_record.last_name }}</h5>
+    <p class="card-text"><b>Status:</b> {{ cust_record.is_active }}</p>
+
+    <div class="card-text"><b>Account Information</b>
+      <div class="card-text">Username: {{ cust_record.username }}</div>
+<!--      <div class="card-text">Password: {{ cust_record.password }}</div>-->
+  </div>
+    <br>
+
+    <div class="card-text"><b>Contact Information</b>
+      <div class="card-text">Address: {{ cust_record.address }}</div>
+      <div class="card-text">Contact: {{ cust_record.phone_number }}</div>
+      <div class="card-text">Email: {{ cust_record.email }}</div>
+  </div>
+    <br>
+
+    <div class="card-text"><b>Twitter Account Information</b>
+      <div class="card-text">Twitter Handle: {{ cust_record.twitter_handle }}</div>
+  </div>
+
+  <br><br>
+      <a href = "{% url 'view'%}" class ="btn btn-secondary">Back</a>
+      <a href="{% url 'update_record' cust_record.id %}" class="btn btn-primary">Update</a>
+      <a href="{% url 'delete_view' cust_record.id %}" class="btn btn-danger">Delete</a>
+      <a href="{%url 'suspend_record' cust_record.id%}" class="btn btn-warning">Suspend</a>
+      <a href="{%url 'reinstate_record' cust_record.id%}" class="btn btn-success">Reinstate</a>
+  </div>
+</div>
+
+
+{% endblock %}

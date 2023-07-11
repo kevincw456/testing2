@@ -1,0 +1,64 @@
+{% extends 'adminBase.html' %}
+
+{% block title %}User Requests{% endblock %}
+
+{% block content %}
+
+    {% include 'navbar.html' %}
+
+    <h3 class="alert alert-primary text-center">User Requests</h3>
+
+
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <p class="alert alert-success mt-3">{{message}}</p>
+            {% else %}
+                <p class="alert alert-danger mt-3">{{message}}</p>
+            {% endif %}
+        {% endfor %}
+
+        <div class="mt-5">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Postal Code</th>
+                        <th scope="col">Twitter Handle</th>
+                        <th scope="col">Status</th>
+                        <th>Approve</th>
+                        <th>Reject</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for r in requests %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{r.username}}</td>
+                            <td>{{r.first_name}}</td>
+                            <td>{{r.last_name}}</td>
+                            <td>{{r.email}}</td>
+                            <td>{{r.phone_number}}</td>
+                            <td>{{r.address}}</td>
+                            <td>{{r.postal_code}}</td>
+                            <td>{{r.twitter_handle}}</td>
+                            <td>{{r.status}}</td>
+                            <td><a href="#" class="btn btn-success">Approve</a></td>
+                            <td><a href="{% url 'reject' r.id %}" class="btn btn-danger">Reject</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+    <div class="text-center" mt-4>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+    </div><br>
+{% endblock %}

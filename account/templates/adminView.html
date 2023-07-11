@@ -1,0 +1,62 @@
+{% extends 'adminBase.html' %}
+
+{% block title %}
+View Accounts
+{% endblock %}
+
+{% block content %}
+
+    {% include 'navbarsearch.html' %}
+
+    <h3 class="alert alert-primary text-center">View Customer Particulars</h3>
+
+
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <p class="alert alert-success mt-3">{{message}}</p>
+            {% else %}
+                <p class="alert alert-danger mt-3">{{message}}</p>
+            {% endif %}
+        {% endfor %}
+
+        <div class="mt-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Postal Code</th>
+                        <th scope="col">Twitter Handle</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for c in customers %}
+                        <tr>
+                            <th><a href = "{% url 'customer_record' c.id %}">{{forloop.counter}}</a></th>
+                            <td>{{c.username}}</td>
+                            <td>{{c.first_name}}</td>
+                            <td>{{c.last_name}}</td>
+                            <td>{{c.email}}</td>
+                            <td>{{c.phone_number}}</td>
+                            <td>{{c.address}}</td>
+                            <td>{{c.postal_code}}</td>
+                            <td>{{c.twitter_handle}}</td>
+                            <td>{{c.status}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+    <div class="text-center" mt-4>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+    </div><br>
+{% endblock %}

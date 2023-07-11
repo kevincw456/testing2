@@ -1,0 +1,32 @@
+{% extends 'adminBase.html' %}
+
+{% block title %}
+Admin Home
+{% endblock %}
+
+{% block content %}
+
+    {% include 'navbar.html' %}
+
+    <h3 class="alert alert-primary text-center">Tweet Analysis</h3>
+
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="container mt-3">
+                {% for message in messages %}
+                    <p class="alert alert-success mt-3">{{message}}</p>
+                {% endfor %}
+
+                {% load crispy_forms_tags %}
+
+                <form method="post" class="form-group">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <button type="submit" class="btn btn-success">Analyse</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

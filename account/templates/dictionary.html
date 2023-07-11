@@ -1,0 +1,68 @@
+{% extends 'adminBase.html' %}
+
+{% block title %}
+Dictionary
+{% endblock %}
+
+{% block content %}
+
+    {% include 'navbar.html' %}
+
+    <h3 class="alert alert-primary text-center">Dictionary</h3><br>
+
+    <div class="container mt-3">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <p class="alert alert-success mt-3">{{message}}</p>
+            {% else %}
+                <p class="alert alert-danger mt-3">{{message}}</p>
+            {% endif %}
+        {% endfor %}
+
+        <form method="POST" action="{% url 'add_word' %}">
+            {% csrf_token %}
+
+            <div class="form-group mb-3">
+                <label>Add word</label>
+                <input type="text" class="form-control" name="word" placeholder="Enter Word">
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Description</label>
+                <input type="text" class="form-control" name="description" placeholder="Describe meaning of word here">
+            </div>
+
+            <div class="text-center" mt-4>
+                <button type="submit" class="btn btn-success">Add</button>
+            </div>
+        </form>
+
+        <div class="mt-5">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Word</th>
+                        <th scope="col">Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for w in word_list %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{w.word}}</td>
+                            <td>{{w.description}}</td>
+                            <td><a href="{% url 'delete_word' w.id %}" class="btn btn-danger">Remove</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center" mt-4>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+    </div><br>
+{% endblock %}
