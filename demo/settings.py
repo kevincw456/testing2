@@ -33,6 +33,7 @@ DEBUG = True
 #ALLOWED_HOSTS = ['.vercel.app','.now.sh','127.0.0.1', 'localhost']
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://testing2-production-d59f.up.railway.app/']
 
 # Application definition
 
