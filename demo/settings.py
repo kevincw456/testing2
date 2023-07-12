@@ -15,7 +15,7 @@ import os
 import dj_database_url
 
 
-DATABASE_URL = "postgresql://postgres:0UcscXzEQXOPqUtCrigQ@containers-us-west-24.railway.app:5810/railway"
+#DATABASE_URL = "postgresql://postgres:0UcscXzEQXOPqUtCrigQ@containers-us-west-24.railway.app:5810/railway"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,7 +87,15 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 
 
 DATABASES = {
-   'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=1800)     
+    'default': {
+   #'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=1800)     
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': '0UcscXzEQXOPqUtCrigQ',
+        'HOST': 'containers-us-west-24.railway.app',
+        'PORT': '5810',
+    }
 }
 
 
