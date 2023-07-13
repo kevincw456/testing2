@@ -12,10 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
-
-
-#DATABASE_URL = "postgresql://postgres:0UcscXzEQXOPqUtCrigQ@containers-us-west-24.railway.app:5810/railway"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,10 +26,9 @@ SECRET_KEY = 'django-insecure--a$c_0)v)t061ws@z#!gr@@k5gnv1&o^u6yj&*)s@+-vzhf4ti
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = ['.vercel.app','.now.sh','127.0.0.1', 'localhost']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*','.vercel.app','.now.sh','127.0.0.1', 'localhost']
+#ALLOWED_HOSTS = ['127.0.0.1']
 
-CSRF_TRUSTED_ORIGINS = ['https://testing2-production-d59f.up.railway.app/']
 
 # Application definition
 
@@ -84,28 +79,16 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-
-
 DATABASES = {
-    'default': {
-   #'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=1800)     
+   'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': '0UcscXzEQXOPqUtCrigQ',
-        'HOST': 'containers-us-west-24.railway.app',
-        'PORT': '5810',
+        'PASSWORD': 'KLsZdtpdaoWPmsS1eKGT',
+        'HOST': 'containers-us-west-67.railway.app',
+        'PORT': '7491',
     }
 }
-
-
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': 'railway',
-#       'USER': 'postgres',
-#        'PASSWORD': '0UcscXzEQXOPqUtCrigQ',
-#        'HOST': 'containers-us-west-24.railway.app',
-#        'PORT': '5810',
-    
 
 
 # Password validation
@@ -144,8 +127,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
+
+MEDIA_URL = "img/"
+MEDIA_ROOT = BASE_DIR/'media' 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
