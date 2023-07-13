@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['*','.vercel.app','.now.sh','127.0.0.1', 'localhost']
 #ALLOWED_HOSTS = ['127.0.0.1']
 
 
-CSRF_TRUSTED_ORIGINS = ['https://praktikum6.jhoncena.repl.co']
+CSRF_TRUSTED_ORIGINS = ['https://testing2-production-d59f.up.railway.app']
 
 # Application definition
 
