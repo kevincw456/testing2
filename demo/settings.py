@@ -145,3 +145,5 @@ LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"
 
 AUTH_USER_MODEL = 'account.Customer'
+
+#test1233
