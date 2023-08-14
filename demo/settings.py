@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -81,14 +82,16 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+
 DATABASES = {
-   'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'KLsZdtpdaoWPmsS1eKGT',
-        'HOST': 'containers-us-west-67.railway.app',
-        'PORT': '7491',
+        'HOST': 'containers-us-west-107.railway.app',
+        'PORT': '7738',
+        'USER': 'root',
+        'PASSWORD': 'M5VYQzcpM1hwJfK7Pw3Z',
     }
 }
 

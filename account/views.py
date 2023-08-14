@@ -39,6 +39,10 @@ from bs4 import BeautifulSoup
 import smtplib
 from email.message import EmailMessage
 
+import nltk
+nltk.download('stopwords')
+nltk.download('wordnet')
+
 
 def email_message(subject, body, to):
     msg = EmailMessage()
@@ -482,15 +486,15 @@ def adminChart(response):
     tweetStats = tweets.objects.raw(
         """       
         SELECT
-            account_tweets.id,
-            account_tweets.twitterUser, 
-            account_tweets.count(CASE WHEN category = 'HM' THEN 1 END) as hateful, 
-            account_tweets.count(CASE WHEN category = 'OL' THEN 1 END) as offensive, 
-            account_tweets.count(CASE WHEN category = 'NM' THEN 1 END) as neutral 
+            id,
+            twitterUser, 
+            count(CASE WHEN category = 'HM' THEN 1 END) as hateful, 
+            count(CASE WHEN category = 'OL' THEN 1 END) as offensive, 
+            count(CASE WHEN category = 'NM' THEN 1 END) as neutral 
         FROM 
-            account_tweets
+            railway.account_tweets
         GROUP BY
-            account_tweets.twitterUser
+            twitterUser
         """
     )
 
@@ -533,7 +537,7 @@ def adminChart(response):
             id,
             tweet
         FROM 
-            account_tweets
+            railway.account_tweets
         WHERE
             category = 'HM'
         """
@@ -545,7 +549,7 @@ def adminChart(response):
             id,
             tweet
         FROM 
-            account_tweets
+            railway.account_tweets
         WHERE
             category = 'OL'
         """
@@ -557,7 +561,7 @@ def adminChart(response):
             id,
             tweet
         FROM 
-            account_tweets
+            railway.account_tweets
         WHERE
             category = 'NM'
         """
@@ -633,7 +637,7 @@ def webScrapper(request):
                         content = item.select("p")[1]
                     # blame the twitter clone for this retarded shit
                     # its not the same format at the fucking user profile page idk why man
-                    if url == 'http://127.0.0.1:5000/profile':
+                    if url == 'https://flask-production-7913.up.railway.app/profile':
                         content = item.select("p")[1]
                     list_tweet.append(content.text)
                     # get comments
@@ -690,7 +694,7 @@ def webScrapper(request):
                     tempCategory = "OL"
                 elif list_Category[i] == "Neutral":
                     tempCategory = "NM"
-                cursor.execute("INSERT INTO account_tweets(twitterUser,tweet,category) VALUES( %s , %s, %s )",
+                cursor.execute("INSERT INTO railway.account_tweets(twitterUser,tweet,category) VALUES( %s , %s, %s )",
                                [str(list_name[i]), str(list_tweet[i]), tempCategory])
 
                 final_list.append(temp_list)
@@ -708,7 +712,7 @@ def webScrapper(request):
                     count(CASE WHEN category = 'OL' THEN 1 END) as offensive, 
                     count(CASE WHEN category = 'NM' THEN 1 END) as neutral 
                 FROM 
-                    account_tweets
+                    railway.account_tweets
                 GROUP BY
                     twitterUser
                 """
@@ -742,7 +746,7 @@ def webScrapper(request):
             # select statement to check for existing users
             userName = twitterUser.objects.raw(
                 """
-                SELECT id,twitterUser FROM account_twitteruser
+                SELECT id,twitterUser FROM railway.account_twitteruser
                 """
             )
             existingUsers = []
@@ -771,7 +775,7 @@ def webScrapper(request):
                 neutralCount = item[4]
                 cursor.execute(
                     """
-                    UPDATE account_twitteruser 
+                    UPDATE railway.account_twitteruser 
                     SET
                         hateCount = %s,
                         neutralCount = %s,
@@ -794,7 +798,7 @@ def webScrapper(request):
                 if name in not_common_users:
                     # if the name exist in not_common_users continue with the insertion
                     cursor.execute(
-                        "INSERT INTO account_twitteruser(twitterUser,hateCount,neutralCount,offensiveCount,weightage) VALUES( %s , %s, %s, %s , %s )",
+                        "INSERT INTO railway.account_twitteruser(twitterUser,hateCount,neutralCount,offensiveCount,weightage) VALUES( %s , %s, %s, %s , %s )",
                         [name, hardCount, neutralCount, offensiveCount, weightage])
             ##########################################
 
@@ -829,7 +833,7 @@ def tweetSearch(response):
                     tweet,
                     category
                 FROM 
-                    account_tweets
+                    railway.account_tweets
                 WHERE
                     twitterUser = %s
                 """
@@ -858,7 +862,7 @@ def custChart(response):
             count(CASE WHEN category = 'OL' THEN 1 END) as offensive, 
             count(CASE WHEN category = 'NM' THEN 1 END) as neutral 
         FROM 
-            account_tweets
+            railway.account_tweets
         GROUP BY
             twitterUser
         """
@@ -903,7 +907,7 @@ def custChart(response):
             id,
             tweet
         FROM 
-            account_tweets
+            railway.account_tweets
         WHERE
             category = 'HM'
         """
@@ -915,7 +919,7 @@ def custChart(response):
             id,
             tweet
         FROM 
-            account_tweets
+            railway.account_tweets
         WHERE
             category = 'OL'
         """
@@ -927,7 +931,7 @@ def custChart(response):
             id,
             tweet
         FROM 
-            account_tweets
+            railway.account_tweets
         WHERE
             category = 'NM'
         """
@@ -1060,7 +1064,7 @@ def cwebScrapper(request):
                     tempCategory = "OL"
                 elif list_Category[i] == "Neutral":
                     tempCategory = "NM"
-                cursor.execute("INSERT INTO account_tweets(twitterUser,tweet,category) VALUES( %s , %s, %s )",
+                cursor.execute("INSERT INTO railway.account_tweets(twitterUser,tweet,category) VALUES( %s , %s, %s )",
                                [str(list_name[i]), str(list_tweet[i]), tempCategory])
 
                 final_list.append(temp_list)
@@ -1078,7 +1082,7 @@ def cwebScrapper(request):
                     count(CASE WHEN category = 'OL' THEN 1 END) as offensive, 
                     count(CASE WHEN category = 'NM' THEN 1 END) as neutral 
                 FROM 
-                    account_tweets
+                    railway.account_tweets
                 GROUP BY
                     twitterUser
                 """
@@ -1112,7 +1116,7 @@ def cwebScrapper(request):
             # select statement to check for existing users
             userName = twitterUser.objects.raw(
                 """
-                SELECT id,twitterUser FROM account_twitteruser
+                SELECT id,twitterUser FROM railway.account_twitteruser
                 """
             )
             existingUsers = []
@@ -1141,7 +1145,7 @@ def cwebScrapper(request):
                 neutralCount = item[4]
                 cursor.execute(
                     """
-                    UPDATE account_twitteruser 
+                    UPDATE railway.account_twitteruser 
                     SET
                         hateCount = %s,
                         neutralCount = %s,
@@ -1164,7 +1168,7 @@ def cwebScrapper(request):
                 if name in not_common_users:
                     # if the name exist in not_common_users continue with the insertion
                     cursor.execute(
-                        "INSERT INTO account_twitteruser(twitterUser,hateCount,neutralCount,offensiveCount,weightage) VALUES( %s , %s, %s, %s , %s )",
+                        "INSERT INTO railway.account_twitteruser(twitterUser,hateCount,neutralCount,offensiveCount,weightage) VALUES( %s , %s, %s, %s , %s )",
                         [name, hardCount, neutralCount, offensiveCount, weightage])
             ##########################################
 
@@ -1199,7 +1203,7 @@ def ctweetSearch(response):
                     tweet,
                     category
                 FROM 
-                    account_tweets
+                    railway.account_tweets
                 WHERE
                     twitterUser = %s
                 """
