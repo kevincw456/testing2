@@ -1,4 +1,4 @@
-{% extends 'adminBase.html' %}
+{% extends 'base.html' %}
 
 {% block title %}
 Dictionary
@@ -54,7 +54,7 @@ Dictionary
                             <td>{{forloop.counter}}</td>
                             <td>{{w.word}}</td>
                             <td>{{w.description}}</td>
-                            <td><a href="{% url 'delete_word' w.id %}" class="btn btn-danger">Remove</a></td>
+                            <td><a href="{% url 'delete_word' w.id %}" class="btn btn-danger">Delete</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

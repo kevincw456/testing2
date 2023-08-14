@@ -1,0 +1,377 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Data Visualisation
+{% endblock %}
+
+{% block content %}
+
+    {% include 'navbar.html' %}
+
+    <h3 class="alert alert-primary text-center">Tweet Analysis</h3>
+
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="container mt-3">
+                <div>
+                    <canvas id="myChart"></canvas>
+                    <canvas id="myChartPie" display="none"></canvas>
+                    <button onclick="myFunction()" class="btn btn-success">Change View</button>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <canvas id="hateChart"></canvas>
+                    <canvas id="offensiveChart" display="none"></canvas>
+                    <canvas id="neutralChart" display="none"></canvas>
+                    <button onclick="wordCountChangeHate()" class="btn btn-danger">View Hate Word Count</button>
+                    <button onclick="wordCountChangeOffensive()" class="btn btn-warning">View Offensive Word Count</button>
+                    <button onclick="wordCountChangeNeutral()" class="btn btn-primary">View Neutral Word Count</button>
+                </div>
+                <div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+//for the bar graph and pie chart. make the pie chart hidden on load
+const barRisk = document.getElementById('myChart');
+const pieRisk = document.getElementById('myChartPie');
+document.getElementById("myChartPie").style.display = "none";
+
+const hateCount = document.getElementById('hateChart');
+const offensiveCount = document.getElementById('offensiveChart');
+const neutralCount = document.getElementById('neutralChart');
+document.getElementById("offensiveChart").style.display = "none";
+document.getElementById("neutralChart").style.display = "none";
+
+const tweetData = '{{sd}}';
+const hateData = '{{hwc}}';
+const offensiveData = '{{owc}}';
+const neutralData = '{{nwc}}';
+
+// Decode HTML-encoded characters
+var decodedStr = tweetData.replace(/&#x27;/g, "'");
+var decodedHate = hateData.replace(/&#x27;/g, "'");
+var decodedOffen = offensiveData.replace(/&#x27;/g, "'");
+var decodedNeut = neutralData.replace(/&#x27;/g, "'");
+
+//decode the tweet data for the word count 
+function tweetDecode(data) {
+    data = data.replace("[", "");
+    data = data.replace("]", "");
+    // Remove parentheses and split into individual tuples
+    var tuples = data.split(/\)\s*,\s*\(/);
+
+    // Convert each tuple to an array
+    var arrayData = tuples.map(function(tuple) {
+        return tuple.replace(/\(|\)/g, "").split(", ");
+    });
+
+    return arrayData
+}
+
+var decodedHate = tweetDecode(decodedHate);
+var decodedOffen = tweetDecode(decodedOffen);
+var decodedNeut = tweetDecode(decodedNeut);
+var arr = eval(decodedStr);
+
+console.log(arr)
+console.log(decodedHate)
+console.log(decodedOffen)
+console.log(decodedNeut)
+
+
+//now that the values are in an array we can split them up as needed for the graphing
+userName = []
+weightage = []
+hm = []
+ol = []
+nm = []
+for (let i = 0; i < arr.length; i++) {
+    userName.push(arr[i][0]);
+    weightage.push(arr[i][1]);
+    //change the values into percentages here
+    totalTweets = parseInt(arr[i][2]) + parseInt(arr[i][3]) + parseInt(arr[i][4])
+    //hate percent
+    hatePercent = (parseInt(arr[i][2]) / totalTweets) * 100
+    hm.push(hatePercent);
+    //offensive percent
+    offenPercent = (parseInt(arr[i][3]) / totalTweets) * 100
+    ol.push(offenPercent);
+    //neutral percent
+    neutralPercent = (parseInt(arr[i][4]) / totalTweets) * 100
+    nm.push(neutralPercent);
+}
+
+//for the word count
+wordNameHate = []
+wordCountHate = []
+wordNameOffen = []
+wordCountOffen = []
+wordNameNeu = []
+wordCountNeu = []
+//hate message
+for (let i = 0; i < decodedHate.length; i++) {
+
+    wordNameHate.push(decodedHate[i][0]);
+    wordCountHate.push(decodedHate[i][1]);
+}
+
+//offensive message
+for (let i = 0; i < decodedOffen.length; i++) {
+
+    wordNameOffen.push(decodedOffen[i][0]);
+    wordCountOffen.push(decodedOffen[i][1]);
+}
+//neutral message
+for (let i = 0; i < decodedNeut.length; i++) {
+
+    wordNameNeu.push(decodedNeut[i][0]);
+    wordCountNeu.push(decodedNeut[i][1]);
+}
+
+//pieBar Data
+pieDataSet = [];
+pieHate = [];
+pieOffen = [];
+pieNeut = [];
+pieName = [];
+for (let i = 0; i < arr.length; i++) {
+    pieHate.push(arr[i][2]);
+    pieOffen.push(arr[i][3]);
+    pieNeut.push(arr[i][4]);
+    //getting the label for the pie chart
+    pieName.push(arr[i][0]);
+}
+//man im sleeped deprived and idk how to do this
+tempDict1 = {
+    label: 'Hate Messages',
+    data: pieHate,
+};
+tempDict2 = {
+    label: 'Offensive Language',
+    data: pieOffen
+};
+tempDict3 = {
+    label: 'Neutral/ Other',
+    data: pieNeut
+};
+pieDataSet.push(tempDict1, tempDict2, tempDict3);
+pieData = {
+    labels: pieName,
+    datasets: pieDataSet
+};
+console.log(wordNameHate);
+console.log(wordCountHate);
+
+//function to change the risk weightage graph to a pie chart
+function myFunction() {
+    var x = document.getElementById('myChart');
+    var y = document.getElementById('myChartPie');
+    if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.display = "none";
+    } else {
+        x.style.display = "none";
+        y.style.display = "block";
+    }
+}
+
+//function to change the top 10 most common words graph
+function wordCountChangeHate() {
+    var x = document.getElementById('hateChart');
+    var y = document.getElementById('offensiveChart');
+    var z = document.getElementById('neutralChart');
+
+    if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.display = "none";
+        z.style.display = "none";
+    }
+}
+
+function wordCountChangeOffensive() {
+    var x = document.getElementById('hateChart');
+    var y = document.getElementById('offensiveChart');
+    var z = document.getElementById('neutralChart');
+
+    if (y.style.display === "none") {
+        x.style.display = "none";
+        y.style.display = "block";
+        z.style.display = "none";
+    }
+    
+}
+
+function wordCountChangeNeutral() {
+    var x = document.getElementById('hateChart');
+    var y = document.getElementById('offensiveChart');
+    var z = document.getElementById('neutralChart');
+
+    if (z.style.display === "none") {
+        x.style.display = "none";
+        y.style.display = "none";
+        z.style.display = "block";
+    }
+}
+
+new Chart(barRisk, {
+    type: 'bar',
+    data: {
+        labels: userName,
+        datasets: [{
+                label: 'Risk Weightage Percentage',
+                data: weightage,
+                borderWidth: 1,
+                borderColor: '#2460e9 ',
+                backgroundColor: '#2460e9 ',
+            },
+            {
+                label: 'Hateful Message Percentage',
+                data: hm,
+                borderWidth: 1,
+                borderColor: '#f42020 ',
+                backgroundColor: '#f42020 ',
+            },
+            {
+                label: 'Offensive Language Percentage',
+                data: ol,
+                borderWidth: 1,
+                borderColor: ' #e9a50b',
+                backgroundColor: ' #e9a50b',
+            },
+            {
+                label: 'Neutral/ Others Percentage',
+                data: nm,
+                borderWidth: 1,
+                borderColor: ' #59e626',
+                backgroundColor: ' #59e626',
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Top 10 Highest Risk Users'
+            }
+        }
+    },
+});
+
+new Chart(pieRisk, {
+    type: 'doughnut',
+    data: pieData,
+    options: {
+        responsive: true,
+        aspectRatio: 1.4,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Highest Risk Users; Number of categorised tweets'
+            },
+            datalabels: {
+                color: 'white',
+                formatter: (val, ctx) => (ctx.dataset.renderText[ctx.dataIndex])
+            }
+        }
+    },
+});
+
+new Chart(hateCount, {
+    type: 'bar',
+    data: {
+        labels: wordNameHate,
+        datasets: [{
+            label: 'Word Count',
+            data: wordCountHate,
+            borderWidth: 1,
+            borderColor: '#f42020 ',
+            backgroundColor: '#f42020 ',
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Top 10 most common words in hateful category'
+            }
+        }
+    },
+});
+
+new Chart(offensiveCount, {
+    type: 'bar',
+    data: {
+        labels: wordNameOffen,
+        datasets: [{
+            label: 'Word Count',
+            data: wordCountOffen,
+            borderWidth: 1,
+            borderColor: ' #e9a50b',
+            backgroundColor: ' #e9a50b',
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Top 10 most common words in offensive category'
+            }
+        }
+    },
+});
+
+new Chart(neutralChart, {
+    type: 'bar',
+    data: {
+        labels: wordNameNeu,
+        datasets: [{
+            label: 'Word Count',
+            data: wordCountNeu,
+            borderWidth: 1,
+            borderColor: ' #59e626',
+            backgroundColor: ' #59e626',
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Top 10 most common words in neutral category'
+            }
+        }
+    },
+});
+
+</script>
+  
+<br>
+
+{% endblock scripts %}

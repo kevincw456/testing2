@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Twitter Users
+{% endblock %}
+
+{% block content %}
+
+    {% include 'navbar.html' %}
+
+    <h3 class="alert alert-primary text-center">View Twitter Users and Tweets</h3>
+
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="container mt-3">
+                <div>
+                    {% load crispy_forms_tags %}
+                    <form method="post" class="form-group">
+                        {% csrf_token %}
+                        {{form|crispy}}
+                        <button type="submit" class="btn btn-success">Search</button>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-5">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Twitter Handle</th>
+                            <th scope="col">Tweet</th>
+                            <th scope="col">Category</th>
+                        </tr>
+                    </thead>
+    
+                    <tbody>
+                        {% for t in tweets %}
+                            <tr>
+                                <th><a href = "{% url 'twitter_user' t.twitterUser %}">{{forloop.counter}}</a></th>
+                                <td>{{t.twitterUser}}</td>
+                                <td>{{t.tweet}}</td>
+                                <td>{{t.category}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

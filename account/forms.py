@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import Customer, Request, UpdateCustomer
+from .models import Customer, Request, UpdateCustomer, UpdateProfile
 
 
 class RegistrationForm(forms.ModelForm):
@@ -14,7 +14,6 @@ class RegistrationForm(forms.ModelForm):
     address = forms.CharField()
     postal_code = forms.IntegerField()
     twitter_handle = forms.CharField()
-    status = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = Request
@@ -61,22 +60,29 @@ class UpdateForm(forms.ModelForm):
                   "twitter_handle"]
 
 
-# class UpdateForm(UserChangeForm):
-#     password = None
-#
-#     first_name = forms.CharField(required=False)
-#     last_name = forms.CharField(required=False)
-#     email = forms.EmailField(required=False)
-#     phone_number = forms.IntegerField(required=False)
-#     address = forms.CharField(required=False)
-#     postal_code = forms.IntegerField(required=False)
-#     twitter_handle = forms.CharField(required=False)
-#
-#     class Meta:
-#         model = Customer
-#         fields = ["first_name", "last_name", "email", "phone_number",
-#                   "address", "postal_code", "twitter_handle"]
+class UpdateProfileForm(forms.ModelForm):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.EmailField()
+    phone_number = forms.CharField()
+    address = forms.CharField()
+    postal_code = forms.CharField()
+    twitter_handle = forms.CharField()
+
+    class Meta:
+        model = UpdateProfile
+        fields = ["first_name", "last_name", "email",
+                  "phone_number", "address", "postal_code",
+                  "twitter_handle"]
 
 
 class AnalysisForm(forms.Form):
-    tweets = forms.CharField(max_length=255)
+    insert_words = forms.CharField(max_length=255)
+
+
+class tweetScrape(forms.Form):
+    insert_Twitter_thread_URL = forms.CharField(max_length=255)
+
+
+class haterSearch(forms.Form):
+    twitter_handle = forms.CharField(max_length=255)

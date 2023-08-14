@@ -1,15 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}
-View Accounts
-{% endblock %}
+{% block title %}Customer Requests{% endblock %}
 
 {% block content %}
 
-    {% include 'navbarsearch.html' %}
+    {% include 'navbar.html' %}
 
-    <h3 class="alert alert-primary text-center">View Customer Particulars</h3>
-
+    <h3 class="alert alert-primary text-center">Customer Requests</h3>
 
         {% for message in messages %}
             {% if message.tags == 'success' %}
@@ -20,7 +17,7 @@ View Accounts
         {% endfor %}
 
         <div class="mt-5">
-            <table class="table">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -32,29 +29,30 @@ View Accounts
                         <th scope="col">Address</th>
                         <th scope="col">Postal Code</th>
                         <th scope="col">Twitter Handle</th>
-                        <th scope="col">Status</th>
+                        <th>Approve</th>
+                        <th>Reject</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {% for c in customers %}
+                    {% for r in requests %}
                         <tr>
-                            <th><a href = "{% url 'customer_record' c.id %}">{{forloop.counter}}</a></th>
-                            <td>{{c.username}}</td>
-                            <td>{{c.first_name}}</td>
-                            <td>{{c.last_name}}</td>
-                            <td>{{c.email}}</td>
-                            <td>{{c.phone_number}}</td>
-                            <td>{{c.address}}</td>
-                            <td>{{c.postal_code}}</td>
-                            <td>{{c.twitter_handle}}</td>
-                            <td>{{c.status}}</td>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{r.username}}</td>
+                            <td>{{r.first_name}}</td>
+                            <td>{{r.last_name}}</td>
+                            <td>{{r.email}}</td>
+                            <td>{{r.phone_number}}</td>
+                            <td>{{r.address}}</td>
+                            <td>{{r.postal_code}}</td>
+                            <td>{{r.twitter_handle}}</td>
+                            <td><a href="{% url 'approve' r.id %}" class="btn btn-success">Approve</a></td>
+                            <td><a href="{% url 'reject' r.id %}" class="btn btn-danger">Reject</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-
 
     <div class="text-center" mt-4>
         <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>

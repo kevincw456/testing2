@@ -1,4 +1,8 @@
-{% extends 'adminbase.html' %}
+{% extends 'base.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
 
 {% block content %}
 {% include 'navbar.html' %}
@@ -8,7 +12,7 @@
   <div class="card-header"><b>Customer Profile   ID: #{{ cust_record.id }}</b></div>
   <div class="card-body">
     <h5 class="card-title">{{ cust_record.first_name }} {{ cust_record.last_name }}</h5>
-    <p class="card-text"><b>Status:</b> {{ cust_record.is_active }}</p>
+<!--    <p class="card-text"><b>Status:</b> {{ cust_record.is_active }}</p>-->
 
     <div class="card-text"><b>Account Information</b>
       <div class="card-text">Username: {{ cust_record.username }}</div>

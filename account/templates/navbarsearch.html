@@ -9,7 +9,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'user_request' %}">User Requests</a>
+                    <a class="nav-link" href="{% url 'customer_request' %}">Customer Requests</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'create' %}">Create Account</a>
@@ -17,13 +17,23 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'view' %}">View Accounts</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dictionary' %}">Dictionary</a>
-                </li>
                 <form class="d-flex" role="search">
                     <input class="form-control me-2" name="q" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dictionary' %}">Dictionary</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'retrieve' %}">Retrieve Tweets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'chart' %}">Data Visualisation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'search' %}">Twitter Users</a>
+                </li>
+
             </ul>
 
         </div>

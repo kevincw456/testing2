@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+{% include 'cnavbar.html' %}
+ <br><br><br>
+
+<div class="card bg-light mb-3" style="max-width: 30rem; margin:0 auto;">
+  <div class="card-header"><b>Profile</b></div>
+  <div class="card-body">
+<!--    <h5 class="card-title">{{ customer_profile.first_name }} {{ customer_profile.last_name }}</h5>-->
+<!--    <p class="card-text"><b>Status:</b> {{ customer_profile.is_active }}</p>-->
+
+    <div class="card-text"><b>Account Information</b>
+      <div class="card-text">Username: {{ customer_profile.username }}</div>
+        <div class="card-text">First Name: {{ customer_profile.first_name }}</div>
+        <div class="card-text">Last Name: {{ customer_profile.last_name }}</div>
+<!--      <div class="card-text">Password: {{ cust_record.password }}</div>-->
+  </div>
+    <br>
+
+    <div class="card-text"><b>Contact Information</b>
+      <div class="card-text">Address: {{ customer_profile.address }}</div>
+      <div class="card-text">Contact: {{ customer_profile.phone_number }}</div>
+      <div class="card-text">Email: {{ customer_profile.email }}</div>
+  </div>
+    <br>
+
+    <div class="card-text"><b>Twitter Account Information</b>
+      <div class="card-text">Twitter Handle: {{ customer_profile.twitter_handle }}</div>
+  </div>
+
+  <br><br>
+      <div>
+        <a href = "{% url 'customer' %}" class ="btn btn-secondary">Back</a>
+        <a href = "{% url 'edit_profile' %}" class ="btn btn-success">Edit</a>
+          <a href = "{% url 'delete_profile' %}" class ="btn btn-danger">Delete Particulars</a>
+      </div>
+<!--      <a href="{% url 'update_record' customer_profile.id %}" class="btn btn-primary">Update</a>-->
+<!--      <a href="{% url 'delete_view' customer_profile.id %}" class="btn btn-danger">Delete</a>-->
+<!--      <a href="{%url 'suspend_record' customer_profile.id%}" class="btn btn-warning">Suspend</a>-->
+<!--      <a href="{%url 'reinstate_record' customer_profile.id%}" class="btn btn-success">Reinstate</a>-->
+  </div>
+</div>
+
+
+{% endblock %}

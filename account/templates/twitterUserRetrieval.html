@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Twitter User Profile
+{% endblock %}
+
+{% block content %}
+{% include 'navbar.html' %}
+ <br><br><br>
+
+<div class="card bg-light mb-3" style="max-width: 30rem; margin:0 auto;">
+  <div class="card-header"><b>Twitter User ID: #{{ t.id }}</b></div>
+  <div class="card-body">
+    <h5 class="card-title">{{ t.twitterUser }}</h5>
+    <p class="card-text"><b>No.Hateful Messages:</b> {{ t.hateCount}}</p>
+    <p class="card-text"><b>No.Offensive Messages:</b> {{ t.offensiveCount }}</p>
+    <p class="card-text"><b>No.Neutral Messages:</b> {{ t.neutralCount }}</p>
+    <p class="card-text"><b>Risk Score:</b> {{ t.weightage }}</p>
+    <div class="card-text">
+      <a href = "{% url 'search' %}" class ="btn btn-secondary">Back</a>
+    </div>
+</div>
+</div>
+
+
+
+{% endblock %}

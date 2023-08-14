@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Retrieve Tweets
+{% endblock %}
+
+{% block content %}
+
+    {% include 'navbar.html' %}
+
+    <h3 class="alert alert-primary text-center">Tweet Retrieval</h3>
+
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="container mt-3">
+                <div>
+                    {% load crispy_forms_tags %}
+                    <form method="post" class="form-group">
+                        {% csrf_token %}
+                        {{form|crispy}}
+                        <button type="submit" class="btn btn-success">Retrieve and Analyze</button>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-5" id="table-container">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+//check if tweet data exist
+//if it does, display the data inside a table
+
+
+//cleaning the tweet data
+const tweetData = '{{tweetData}}';
+
+if (typeof tweetData !== 'undefined') {
+    //need to clean the input before inserting inside the table
+    data = dataCleaning(tweetData)
+    insertIntoTable(data);
+}
+else {
+    console.log('there is nothing here')
+}
+
+//function to make string into 2d array
+function replaceHexEntities(match) {
+  return String.fromCharCode(parseInt(match.substring(3, match.length - 1), 16));
+}
+
+function replaceSpecialCharacters(input) {
+        const pattern = /&#x[0-9A-Fa-f]+;/g;
+        return input.replace(pattern, replaceHexEntities);
+}
+
+//function to make string into 2d array
+function dataCleaning(data){
+    console.log(data)
+
+    var decodedStr = replaceSpecialCharacters(data);
+
+    console.log(decodedStr)
+
+    //make the string into a 2d array
+    twoDArray = eval(decodedStr);
+    console.log(twoDArray)
+    return twoDArray;
+}
+
+//function to insert data into the table
+function insertIntoTable(dataArray){
+    //create table element
+    var table = document.createElement('table');
+    var headerRow = document.createElement('tr');
+    var headerData = ['Twitter Name', 'Tweet', 'Category']
+    for ( let i = 0; i < headerData.length; i++) {
+        var headerCell = document.createElement('th');
+        headerCell.textContent = headerData[i];
+        headerCell.style.border = "1px solid black";
+        headerCell.style.padding = "10px";
+        headerRow.appendChild(headerCell);
+    }
+    table.appendChild(headerRow);
+
+    //loop through the data array and create table rows and cells
+    for (let i = 0; i < dataArray.length; i++){
+        var row = document.createElement('tr');
+        for (let j = 0; j < dataArray[i].length; j++){
+            var cell = document.createElement('td');
+            cell.textContent = dataArray[i][j];
+            cell.style.border = "1px solid black";
+            cell.style.padding = "10px";
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+        table.style.border = "1px solid black";
+    }
+
+    var tableContainer = document.getElementById('table-container');
+    tableContainer.appendChild(table);
+}
+
+
+
+</script>
+
+{% endblock scripts %}
