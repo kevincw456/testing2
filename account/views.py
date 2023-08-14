@@ -28,6 +28,10 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from pathlib import Path
 
+import nltk
+nltk.download('stopwords')
+nltk.download('wordnet')
+
 #testing
 from django.views.generic import View
 from rest_framework.views import APIView
@@ -38,10 +42,6 @@ from bs4 import BeautifulSoup
 
 import smtplib
 from email.message import EmailMessage
-
-import nltk
-nltk.download('stopwords')
-nltk.download('wordnet')
 
 
 def email_message(subject, body, to):
@@ -485,16 +485,16 @@ def adminChart(response):
     # sql statement to count each user's hateful/offensive/neutral messages
     tweetStats = tweets.objects.raw(
         """       
-        SELECT
-            id,
-            twitterUser, 
-            count(CASE WHEN category = 'HM' THEN 1 END) as hateful, 
-            count(CASE WHEN category = 'OL' THEN 1 END) as offensive, 
-            count(CASE WHEN category = 'NM' THEN 1 END) as neutral 
+        SELECT 
+            MAX("id") as id,
+            "twitterUser", 
+            count(CASE WHEN "category" = 'HM' THEN 1 END) as hateful, 
+            count(CASE WHEN "category" = 'OL' THEN 1 END) as offensive, 
+            count(CASE WHEN "category" = 'NM' THEN 1 END) as neutral
         FROM 
-            railway.account_tweets
+            account_tweets
         GROUP BY
-            twitterUser
+            "twitterUser"
         """
     )
 
@@ -534,36 +534,36 @@ def adminChart(response):
     tweetHateful = tweets.objects.raw(
         """       
         SELECT
-            id,
-            tweet
+            "id",
+            "tweet"
         FROM 
-            railway.account_tweets
+            account_tweets
         WHERE
-            category = 'HM'
+            "category" = 'HM'
         """
     )
 
     tweetOffensive = tweets.objects.raw(
         """       
         SELECT
-            id,
-            tweet
+            "id",
+            "tweet"
         FROM 
-            railway.account_tweets
+            account_tweets
         WHERE
-            category = 'OL'
+            "category" = 'OL'
         """
     )
 
     tweetNeutral = tweets.objects.raw(
         """       
         SELECT
-            id,
-            tweet
+            "id",
+            "tweet"
         FROM 
-            railway.account_tweets
+            "account_tweets"
         WHERE
-            category = 'NM'
+            "category" = 'NM'
         """
     )
 
@@ -694,8 +694,19 @@ def webScrapper(request):
                     tempCategory = "OL"
                 elif list_Category[i] == "Neutral":
                     tempCategory = "NM"
-                cursor.execute("INSERT INTO railway.account_tweets(twitterUser,tweet,category) VALUES( %s , %s, %s )",
-                               [str(list_name[i]), str(list_tweet[i]), tempCategory])
+                
+                cursor.execute(
+                    """
+                    INSERT INTO
+                        account_tweets(
+                            "twitterUser",
+                            "tweet",
+                            "category"
+                        )
+                    VALUES ( %s , %s, %s )
+
+                    """, [str(list_name[i]), str(list_tweet[i]), tempCategory]
+                )
 
                 final_list.append(temp_list)
             #################################################################################
@@ -705,16 +716,16 @@ def webScrapper(request):
             # SELECT TWEET TO COUNT ALL HM, OL AND NM GROUP BY TWITTER USER
             tweetStats = tweets.objects.raw(
                 """       
-                SELECT
-                    id,
-                    twitterUser, 
-                    count(CASE WHEN category = 'HM' THEN 1 END) as hateful, 
-                    count(CASE WHEN category = 'OL' THEN 1 END) as offensive, 
-                    count(CASE WHEN category = 'NM' THEN 1 END) as neutral 
+                SELECT 
+                    MAX("id") as id,
+                    "twitterUser", 
+                    count(CASE WHEN "category" = 'HM' THEN 1 END) as hateful, 
+                    count(CASE WHEN "category" = 'OL' THEN 1 END) as offensive, 
+                    count(CASE WHEN "category" = 'NM' THEN 1 END) as neutral
                 FROM 
-                    railway.account_tweets
+                    account_tweets
                 GROUP BY
-                    twitterUser
+                    "twitterUser"
                 """
             )
             # CALCULATE THE RISK WEIGHTAGE
@@ -746,7 +757,11 @@ def webScrapper(request):
             # select statement to check for existing users
             userName = twitterUser.objects.raw(
                 """
-                SELECT id,twitterUser FROM railway.account_twitteruser
+                SELECT 
+                    "id",
+                    "twitterUser" 
+                FROM 
+                    account_twitteruser
                 """
             )
             existingUsers = []
@@ -775,14 +790,14 @@ def webScrapper(request):
                 neutralCount = item[4]
                 cursor.execute(
                     """
-                    UPDATE railway.account_twitteruser 
+                    UPDATE account_twitteruser 
                     SET
-                        hateCount = %s,
-                        neutralCount = %s,
-                        offensiveCount = %s,
-                        weightage = %s
+                        "hateCount" = %s,
+                        "neutralCount" = %s,
+                        "offensiveCount" = %s,
+                        "weightage" = %s
                     WHERE
-                        (twitterUser = %s)
+                        ("twitterUser" = %s)
                     """, [hardCount, neutralCount, offensiveCount, weightage, name]
                 )
 
@@ -798,8 +813,19 @@ def webScrapper(request):
                 if name in not_common_users:
                     # if the name exist in not_common_users continue with the insertion
                     cursor.execute(
-                        "INSERT INTO railway.account_twitteruser(twitterUser,hateCount,neutralCount,offensiveCount,weightage) VALUES( %s , %s, %s, %s , %s )",
-                        [name, hardCount, neutralCount, offensiveCount, weightage])
+                    """
+                    INSERT INTO
+                        account_twitteruser(
+                            "twitterUser",
+                            "hateCount",
+                            "neutralCount",
+                            "offensiveCount",
+                            "weightage"
+                        )
+                    VALUES ( %s , %s, %s, %s , %s )
+
+                    """, [name, hardCount, neutralCount, offensiveCount, weightage]
+                    )
             ##########################################
 
             # ONCE ALL THIS IS DONE, USER CAN SEE TWITTER USER WITH THE WEIGHTAGE IN ANOTHER TAB
@@ -828,14 +854,14 @@ def tweetSearch(response):
             t = tweets.objects.raw(
                 """       
                 SELECT
-                    id,
-                    twitterUser,
-                    tweet,
-                    category
+                    "id",
+                    "twitterUser",
+                    "tweet",
+                    "category"
                 FROM 
-                    railway.account_tweets
+                    account_tweets
                 WHERE
-                    twitterUser = %s
+                    "twitterUser" = %s
                 """
                 , [userName])
 
@@ -855,16 +881,16 @@ def custChart(response):
     # sql statement to count each user's hateful/offensive/neutral messages
     tweetStats = tweets.objects.raw(
         """       
-        SELECT
-            id,
-            twitterUser, 
-            count(CASE WHEN category = 'HM' THEN 1 END) as hateful, 
-            count(CASE WHEN category = 'OL' THEN 1 END) as offensive, 
-            count(CASE WHEN category = 'NM' THEN 1 END) as neutral 
+        SELECT 
+            MAX("id") as id,
+            "twitterUser", 
+            count(CASE WHEN "category" = 'HM' THEN 1 END) as hateful, 
+            count(CASE WHEN "category" = 'OL' THEN 1 END) as offensive, 
+            count(CASE WHEN "category" = 'NM' THEN 1 END) as neutral
         FROM 
-            railway.account_tweets
+            account_tweets
         GROUP BY
-            twitterUser
+            "twitterUser"
         """
     )
 
@@ -904,36 +930,36 @@ def custChart(response):
     tweetHateful = tweets.objects.raw(
         """       
         SELECT
-            id,
-            tweet
+            "id",
+            "tweet"
         FROM 
-            railway.account_tweets
+            account_tweets
         WHERE
-            category = 'HM'
+            "category" = 'HM'
         """
     )
 
     tweetOffensive = tweets.objects.raw(
         """       
         SELECT
-            id,
-            tweet
+            "id",
+            "tweet"
         FROM 
-            railway.account_tweets
+            account_tweets
         WHERE
-            category = 'OL'
+            "category" = 'OL'
         """
     )
 
     tweetNeutral = tweets.objects.raw(
         """       
         SELECT
-            id,
-            tweet
+            "id",
+            "tweet"
         FROM 
-            railway.account_tweets
+            account_tweets
         WHERE
-            category = 'NM'
+            "category" = 'NM'
         """
     )
 
@@ -1064,8 +1090,18 @@ def cwebScrapper(request):
                     tempCategory = "OL"
                 elif list_Category[i] == "Neutral":
                     tempCategory = "NM"
-                cursor.execute("INSERT INTO railway.account_tweets(twitterUser,tweet,category) VALUES( %s , %s, %s )",
-                               [str(list_name[i]), str(list_tweet[i]), tempCategory])
+                cursor.execute(
+                    """
+                    INSERT INTO
+                        account_tweets(
+                            "twitterUser",
+                            "tweet",
+                            "category"
+                        )
+                    VALUES ( %s , %s, %s )
+
+                    """, [str(list_name[i]), str(list_tweet[i]), tempCategory]
+                )
 
                 final_list.append(temp_list)
             #################################################################################
@@ -1075,16 +1111,16 @@ def cwebScrapper(request):
             # SELECT TWEET TO COUNT ALL HM, OL AND NM GROUP BY TWITTER USER
             tweetStats = tweets.objects.raw(
                 """       
-                SELECT
-                    id,
-                    twitterUser, 
-                    count(CASE WHEN category = 'HM' THEN 1 END) as hateful, 
-                    count(CASE WHEN category = 'OL' THEN 1 END) as offensive, 
-                    count(CASE WHEN category = 'NM' THEN 1 END) as neutral 
+                SELECT 
+                    MAX("id") as id,
+                    "twitterUser", 
+                    count(CASE WHEN "category" = 'HM' THEN 1 END) as hateful, 
+                    count(CASE WHEN "category" = 'OL' THEN 1 END) as offensive, 
+                    count(CASE WHEN "category" = 'NM' THEN 1 END) as neutral
                 FROM 
-                    railway.account_tweets
+                    account_tweets
                 GROUP BY
-                    twitterUser
+                    "twitterUser"
                 """
             )
             # CALCULATE THE RISK WEIGHTAGE
@@ -1116,7 +1152,11 @@ def cwebScrapper(request):
             # select statement to check for existing users
             userName = twitterUser.objects.raw(
                 """
-                SELECT id,twitterUser FROM railway.account_twitteruser
+                SELECT 
+                    "id",
+                    "twitterUser"
+                FROM 
+                    account_twitteruser
                 """
             )
             existingUsers = []
@@ -1145,14 +1185,14 @@ def cwebScrapper(request):
                 neutralCount = item[4]
                 cursor.execute(
                     """
-                    UPDATE railway.account_twitteruser 
+                    UPDATE account_twitteruser 
                     SET
-                        hateCount = %s,
-                        neutralCount = %s,
-                        offensiveCount = %s,
-                        weightage = %s
+                        "hateCount" = %s,
+                        "neutralCount" = %s,
+                        "offensiveCount" = %s,
+                        "weightage" = %s
                     WHERE
-                        (twitterUser = %s)
+                        ("twitterUser" = %s)
                     """, [hardCount, neutralCount, offensiveCount, weightage, name]
                 )
 
@@ -1168,8 +1208,19 @@ def cwebScrapper(request):
                 if name in not_common_users:
                     # if the name exist in not_common_users continue with the insertion
                     cursor.execute(
-                        "INSERT INTO railway.account_twitteruser(twitterUser,hateCount,neutralCount,offensiveCount,weightage) VALUES( %s , %s, %s, %s , %s )",
-                        [name, hardCount, neutralCount, offensiveCount, weightage])
+                    """
+                    INSERT INTO
+                        account_twitteruser(
+                            "twitterUser",
+                            "hateCount",
+                            "neutralCount",
+                            "offensiveCount",
+                            "weightage"
+                        )
+                    VALUES ( %s , %s, %s, %s , %s )
+
+                    """, [name, hardCount, neutralCount, offensiveCount, weightage]
+                    )
             ##########################################
 
             # ONCE ALL THIS IS DONE, USER CAN SEE TWITTER USER WITH THE WEIGHTAGE IN ANOTHER TAB
@@ -1198,14 +1249,14 @@ def ctweetSearch(response):
             t = tweets.objects.raw(
                 """       
                 SELECT
-                    id,
-                    twitterUser,
-                    tweet,
-                    category
+                    "id",
+                    "twitterUser",
+                    "tweet",
+                    "category"
                 FROM 
-                    railway.account_tweets
+                    account_tweets
                 WHERE
-                    twitterUser = %s
+                    "twitterUser" = %s
                 """
                 , [userName])
 
