@@ -36,7 +36,7 @@ Twitter Users
                     <tbody>
                         {% for t in tweets %}
                             <tr>
-                                <th><a href = "{% url 'twitter_user' t.twitterUser %}">{{forloop.counter}}</a></th>
+                                <th><a href = "{% url 'ctwitter_user' t.twitterUser %}">{{forloop.counter}}</a></th>
                                 <td>{{t.twitterUser}}</td>
                                 <td>{{t.tweet}}</td>
                                 <td>{{t.category}}</td>
