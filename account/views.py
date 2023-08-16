@@ -255,7 +255,7 @@ def view(request):
     if 'q' in request.GET:  # q is the variable that carries the term user is searching for
         q = request.GET['q']
         multiple_queries = Q(Q(first_name__istartswith=q) | Q(last_name__istartswith=q))
-        customers = Customer.objects.filter(multiple_queries)  # need to add error for no results found?
+        customers = Customer.objects.filter(multiple_queries) & Customer.objects.filter(is_superuser=False)
     else:
         customers = Customer.objects.filter(is_superuser=False)
     return render(request, 'adminView.html', {'customers': customers})
