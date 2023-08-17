@@ -22,7 +22,7 @@ Update Account
                 <form method="post" class="form-group">
                     {% csrf_token %}
                     {{form|crispy}}
-                    <a href="{% url 'view' %}" class="btn btn-secondary">Back</a>
+                    <a href="{% url 'view_profile' %}" class="btn btn-secondary">Back</a>
                     <button type="submit" class="btn btn-success">Update Particulars</button>
                 </form>
             </div>
