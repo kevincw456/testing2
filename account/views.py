@@ -113,7 +113,9 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            register_isvalid(request)
+            form.save()
+            messages.success(request, "Request sent. Kindly wait a few days for approval!")
+            send_email(request)
     else:
         form = RegistrationForm()
     return render(request, 'register.html', {'form': form})
@@ -238,7 +240,11 @@ def admin_create(request):
     if request.method == 'POST':
         form = CreationForm(request.POST)
         if form.is_valid():
-            create_isvalid(request)
+            email = form['email'].value()
+            form.save()
+            creation_email(request, email)
+            messages.success(request, "Customer account created!")
+            return redirect(admin_create)
     else:
         form = CreationForm()
     return render(request, 'adminCreate.html', {'form': form})
